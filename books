@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec gjs -I ./ -c "const Main = imports.main; Main.start();" "$@"
