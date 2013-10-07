@@ -4,6 +4,8 @@ const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
+const workModel = imports.workModel;
+
 const MainWindow = new Lang.Class({
     Name: 'MainWindow',
     Extends: Gtk.ApplicationWindow,
@@ -25,6 +27,8 @@ const MainWindow = new Lang.Class({
         this.add(this._box);
 
         this._bookWindowAction = 'none';
+
+        this._bookshelf = {};
     },
 
     _populate_toolbar: function() {
@@ -119,12 +123,28 @@ const MainWindow = new Lang.Class({
     },
 
     _book_window_ok: function (dialog, response_id) {
-        this._bookWindow.hide();
         if (this._bookWindowAction == 'new') {
-            print("Append a book");
-        }
+            let title = this._newTitleEntry.get_text();
+            let author = this._newAuthorEntry.get_text();
+            if (title != "" && author != "") {
+                this._bookWindow.hide();
 
-        this._bookWindowAction = 'none';
+                let book = new workModel.workModel(title, author);
+                this._append_book(book);
+
+                this._bookWindowAction = 'none';
+            } else {
+                let dialog = new Gtk.Dialog({ transient_for: this._bookWindow,
+                                              modal: true,
+                                              title: "Missing data" });
+                dialog.add_button('gtk-ok', Gtk.ResponseType.OK);
+                let label = new Gtk.Label({ label: 'Title and author are required.' });
+                dialog.get_content_area().add(label);
+                label.show();
+                dialog.run();
+                dialog.destroy();
+            }
+        }
     },
 
     _new_book: function() {
@@ -135,5 +155,11 @@ const MainWindow = new Lang.Class({
         this._newAuthorEntry.set_text('');
         this._bookWindowAction = 'new';
         this._bookWindow.show_all();
+    },
+
+    _append_book: function(bookModel) {
+        let iter = this._listStore.append();
+        this._listStore.set(iter, [ 0, 1 ], [ bookModel.title, bookModel.author ]);
+        this._bookshelf[iter] = bookModel;
     },
 });
