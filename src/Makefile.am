@@ -20,6 +20,7 @@ gnome-books: gnome-books.in
 jsdir = $(pkgdatadir)/js/
 dist_js_DATA = 			\
 	application.js  	\
+        detailsWindow.js        \
 	main.js  		\
 	mainWindow.js 		\
 	workModel.js 
