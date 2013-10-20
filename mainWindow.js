@@ -15,6 +15,13 @@ const MainWindow = new Lang.Class({
                       hide_titlebar_when_maximized: true,
                       title: "Books" });
 
+        let newAction = new Gio.SimpleAction({ "name": 'new' });
+        newAction.connect('activate', Lang.bind(this,
+                                                function() {
+                                                    this._new_book();
+                                                    }));
+        this.application.add_action(newAction);
+
         this._box = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL,
                                   visible: true });
 
@@ -38,13 +45,6 @@ const MainWindow = new Lang.Class({
         let separator = new Gtk.SeparatorToolItem({ draw: false });
         this._toolbar.add(separator);
         separator.set_expand(true);
-
-        let newAction = new Gio.SimpleAction({ "name": 'new' });
-        newAction.connect('activate', Lang.bind(this,
-                                                function() {
-                                                    this._new_book();
-                                                    }));
-        this.application.add_action(newAction);
 
         this._newButton =  Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
         this._newButton.is_important = true;
