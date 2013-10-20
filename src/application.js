@@ -16,8 +16,6 @@ const Application = new Lang.Class({
     vfunc_startup: function() {
         this.parent();
 
-        Gtk.init(null);
-
         this._mainWindow = new MainWindow.MainWindow(this);
     },
 

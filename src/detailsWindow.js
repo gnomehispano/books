@@ -93,13 +93,21 @@ const DetailsWindow = new Lang.Class({
         this.connect("delete-event",
                          Lang.bind (this,
                                     this.hide_on_delete));
-
+        
+        let updateButtonSensitive = Lang.bind(this, function() {
+            okButton.sensitive = this._newTitleEntry.text.length &&
+                                 this._newAuthorEntry.text.length;
+        });
+        this._newTitleEntry.connect('changed', updateButtonSensitive);
+        this._newAuthorEntry.connect('changed', updateButtonSensitive);
+        updateButtonSensitive();
     },
 
     _clearInfo: function() {
 	this._newTitleEntry.set_text('');
         this._newAuthorEntry.set_text('');
         this.app._bookWindowAction = 'new';
+        this._newTitleEntry.grab_focus();
         this.show_all();
     },
 
@@ -107,25 +115,14 @@ const DetailsWindow = new Lang.Class({
         if (this.app._bookWindowAction == 'new') {
             let title = this._newTitleEntry.get_text();
             let author = this._newAuthorEntry.get_text();
-            if (title != "" && author != "") {
-                this.hide();
 
-                let book = new workModel.workModel(this.app._work_counter, title, author);
-		this.app._work_counter++;
-                this.app._append_book(book);
+            this.hide();
 
-                this.app._bookWindowAction = 'none';
-            } else {
-                let dialog = new Gtk.Dialog({ transient_for: this,
-                                              modal: true,
-                                              title: "Missing data" });
-                dialog.add_button('gtk-ok', Gtk.ResponseType.OK);
-                let label = new Gtk.Label({ label: 'Title and author are required.' });
-                dialog.get_content_area().add(label);
-                label.show();
-                dialog.run();
-                dialog.destroy();
-            }
+            let book = new workModel.workModel(this.app._work_counter, title, author);
+	        this.app._work_counter++;
+            this.app._append_book(book);
+
+            this.app._bookWindowAction = 'none';
         }
     }
 

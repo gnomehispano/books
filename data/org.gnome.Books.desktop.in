@@ -1,0 +1,11 @@
+[Desktop Entry]
+_Name=Books
+_Comment=A simple GNOME book manager
+Exec=gnome-books
+TryExec=gnome-books
+Icon=
+Type=Application
+StartupNotify=True
+DBusActivatable=True
+Categories=GNOME;GTK;Utility;
+_Keywords=Books;
