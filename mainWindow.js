@@ -105,7 +105,7 @@ const MainWindow = new Lang.Class({
 
     _append_book: function(bookModel) {
         let iter = this._listStore.append();
-        this._listStore.set(iter, [ 0, 1 ], [ bookModel.title, bookModel.author ]);
-        this._bookshelf[iter] = bookModel;
+	this._listStore.set(iter, [ 0, 1, 2 ], [ bookModel.id, bookModel.title, bookModel.author ]);
+        this._bookshelf[bookModel.id] = bookModel;
     },
 });
