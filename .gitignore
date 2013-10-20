@@ -1,5 +1,6 @@
 # http://www.gnu.org/software/automake
 
+Makefile
 Makefile.in
 
 # http://www.gnu.org/software/autoconf
@@ -11,3 +12,15 @@ Makefile.in
 /depcomp
 /install-sh
 /missing
+
+config.log
+config.status
+config/
+libtool
+m4/
+po/Makefile
+po/Makefile.in.in
+po/POTFILES
+po/stamp-it
+src/Makefile
+src/gnome-books
