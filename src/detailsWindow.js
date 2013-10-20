@@ -36,7 +36,7 @@ const DetailsWindow = new Lang.Class({
         this._newNotesScrolledWindow = new Gtk.ScrolledWindow();
         this._newSummaryTextView.buffer = this._newSummaryTextBuffer;
         this._newNotesTextView.buffer = this._newNotesTextBuffer;
-	    this._newSummaryScrolledWindow.add(this._newSummaryTextView);
+        this._newSummaryScrolledWindow.add(this._newSummaryTextView);
         this._newNotesScrolledWindow.add(this._newNotesTextView);
 
         dialogGrid.attach(this._newCoverImage,
@@ -104,7 +104,7 @@ const DetailsWindow = new Lang.Class({
     },
 
     _clearInfo: function() {
-	this._newTitleEntry.set_text('');
+    this._newTitleEntry.set_text('');
         this._newAuthorEntry.set_text('');
         this.app._bookWindowAction = 'new';
         this._newTitleEntry.grab_focus();
@@ -119,7 +119,7 @@ const DetailsWindow = new Lang.Class({
             this.hide();
 
             let book = new workModel.workModel(this.app._work_counter, title, author);
-	        this.app._work_counter++;
+            this.app._work_counter++;
             this.app._append_book(book);
 
             this.app._bookWindowAction = 'none';

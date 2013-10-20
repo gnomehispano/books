@@ -116,7 +116,7 @@ const MainWindow = new Lang.Class({
         if (!this._bookWindow) {
             this._populate_book_window();
         }
-	this._bookWindow._clearInfo();
+        this._bookWindow._clearInfo();
     },
 
     _append_book: function(bookModel) {
