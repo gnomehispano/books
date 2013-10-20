@@ -70,7 +70,8 @@ const DetailsWindow = new Lang.Class({
             if (title != "" && author != "") {
                 this.hide();
 
-                let book = new workModel.workModel(title, author);
+                let book = new workModel.workModel(this.app._work_counter, title, author);
+		this.app._work_counter++;
                 this.app._append_book(book);
 
                 this.app._bookWindowAction = 'none';

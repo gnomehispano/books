@@ -16,6 +16,8 @@ const MainWindow = new Lang.Class({
                       hide_titlebar_when_maximized: true,
                       title: "Books" });
 
+        this._work_counter = 1;
+
         this._box = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL,
                                   visible: true });
 
@@ -47,14 +49,15 @@ const MainWindow = new Lang.Class({
                                                     }));
         this.application.add_action(newAction);
 
-        this._newButton = new Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
+        this._newButton =  Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
         this._newButton.is_important = true;
         this._toolbar.add(this._newButton);
         this._newButton.action_name = "app.new";
     },
 
     _populate_treeview: function() {
-        this._listStore = Gtk.ListStore.new ([ GObject.TYPE_STRING,
+        this._listStore = Gtk.ListStore.new ([ GObject.TYPE_INT,
+                                               GObject.TYPE_STRING,
                                                GObject.TYPE_STRING ]);
         this._treeView = new Gtk.TreeView ({ expand: true,
                                              model: this._listStore });
@@ -67,8 +70,8 @@ const MainWindow = new Lang.Class({
         titleCol.pack_start(normalCell, true);
         authorCol.pack_start(normalCell, true);
 
-        titleCol.add_attribute(normalCell, "text", 0);
-        authorCol.add_attribute(normalCell, "text", 1);
+        titleCol.add_attribute(normalCell, "text", 1);
+        authorCol.add_attribute(normalCell, "text", 2);
 
         this._treeView.insert_column(titleCol, 0);
         this._treeView.insert_column(authorCol, 1);
