@@ -12,16 +12,28 @@ const MainWindow = new Lang.Class({
 
     _init: function(app) {
         this.parent({ application: app,
-                      hide_titlebar_when_maximized: true,
                       title: "Books" });
 
         this._work_counter = 1;
 
+        let newAction = new Gio.SimpleAction({ "name": 'new' });
+        newAction.connect('activate', Lang.bind(this,
+                                                function() {
+                                                    this._new_book();
+                                                    }));
+        this.application.add_action(newAction);
+
         this._box = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL,
                                   visible: true });
 
-        this._populate_toolbar();
-        this._box.add(this._toolbar);
+        if (Gtk.MINOR_VERSION < 10) {
+            this._populate_toolbar();
+            this._box.add(this._toolbar);
+            this.hide_titlebar_when_maximized = true;
+        } else {
+            this._populate_headerbar();
+            this.set_titlebar(this._headerbar);
+        }
 
         this._populate_treeview();
         this._box.add(this._scroll);
@@ -41,16 +53,19 @@ const MainWindow = new Lang.Class({
         this._toolbar.add(separator);
         separator.set_expand(true);
 
-        let newAction = new Gio.SimpleAction({ "name": 'new' });
-        newAction.connect('activate', Lang.bind(this,
-                                                function() {
-                                                    this._new_book();
-                                                    }));
-        this.application.add_action(newAction);
-
         this._newButton =  Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
         this._newButton.is_important = true;
         this._toolbar.add(this._newButton);
+        this._newButton.action_name = "app.new";
+    },
+
+    _populate_headerbar: function() {
+        this._headerbar = new Gtk.HeaderBar({ title: 'Books',
+                                              show_close_button: true });
+
+        this._newButton = new Gtk.Button({ label: 'New',
+                                           valign: Gtk.Align.CENTER });
+        this._headerbar.pack_start(this._newButton);
         this._newButton.action_name = "app.new";
     },
 
@@ -94,8 +109,8 @@ const MainWindow = new Lang.Class({
         let dialogGrid = new Gtk.Grid( { row_spacing: 6,
                                          column_spacing: 6 } );
 
-        this._newTitleEntry = new Gtk.Entry();
-        this._newAuthorEntry = new Gtk.Entry();
+        this._newTitleEntry = new Gtk.Entry({ activates_default: true });
+        this._newAuthorEntry = new Gtk.Entry({ activates_default: true });
 
         dialogGrid.attach(new Gtk.Label ({ label: "Title" }),
                           0, 0, 1, 1);
@@ -107,16 +122,25 @@ const MainWindow = new Lang.Class({
                           1, 1, 1, 1);
 
         let okButton = Gtk.Button.new_from_stock(Gtk.STOCK_OK);
+        okButton.can_default = true;
         okButton.connect("clicked", Lang.bind (this, this._book_window_ok));
         dialogGrid.attach(okButton,
                           0, 2, 2, 1);
 
         this._bookWindow.add(dialogGrid);
-        
+        this._bookWindow.set_default(okButton);
 
         this._bookWindow.connect("delete-event",
                                  Lang.bind (this._bookWindow,
                                             this._bookWindow.hide_on_delete));
+
+        let updateButtonSensitive = Lang.bind(this, function() {
+            okButton.sensitive = this._newTitleEntry.text.length &&
+                                 this._newAuthorEntry.text.length;
+        });
+        this._newTitleEntry.connect('changed', updateButtonSensitive);
+        this._newAuthorEntry.connect('changed', updateButtonSensitive);
+        updateButtonSensitive();
     },
 
     _book_window_cancel: function (dialog, user_data) {
@@ -148,6 +172,12 @@ const MainWindow = new Lang.Class({
                 dialog.run();
                 dialog.destroy();
             }
+            this._bookWindow.hide();
+
+            let book = new workModel.workModel(title, author);
+            this._append_book(book);
+
+            this._bookWindowAction = 'none';
         }
     },
 
@@ -158,6 +188,7 @@ const MainWindow = new Lang.Class({
         this._newTitleEntry.set_text('');
         this._newAuthorEntry.set_text('');
         this._bookWindowAction = 'new';
+        this._newTitleEntry.grab_focus();
         this._bookWindow.show_all();
     },
 
