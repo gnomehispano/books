@@ -16,6 +16,8 @@ Makefile.in
 config.log
 config.status
 config/
+data/*.desktop
+data/*.service
 libtool
 m4/
 po/Makefile

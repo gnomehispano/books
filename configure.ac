@@ -55,6 +55,7 @@ AC_PATH_PROG(DESKTOP_FILE_VALIDATE, desktop-file-validate)
 
 AC_CONFIG_FILES([
 Makefile
+data/Makefile
 src/Makefile
 po/Makefile.in
 ])
