@@ -77,12 +77,12 @@ const DetailsWindow = new Lang.Class({
         dialogGrid.attach(this._newNotesScrolledWindow,
                           0, 8, 4, 1);
 
-        let cancelButton = new Gtk.Button.new_from_stock(Gtk.STOCK_CLOSE);
+        let cancelButton = Gtk.Button.new_from_stock(Gtk.STOCK_CLOSE);
         cancelButton.connect("clicked", Lang.bind(this, this.hide_on_delete));
         dialogGrid.attach(cancelButton,
                           2, 9, 1, 1);
 
-        let okButton = new Gtk.Button.new_from_stock(Gtk.STOCK_OK);
+        let okButton = Gtk.Button.new_from_stock(Gtk.STOCK_OK);
         okButton.connect("clicked", Lang.bind (this, this._book_window_ok));
         dialogGrid.attach(okButton,
                           3, 9, 1, 1);
