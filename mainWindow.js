@@ -22,6 +22,7 @@ const MainWindow = new Lang.Class({
                                                     this._new_book();
                                                     }));
         this.application.add_action(newAction);
+        this.application.add_accelerator('<Primary>n', 'app.new', null);
 
         this._box = new Gtk.Box({ orientation: Gtk.Orientation.VERTICAL,
                                   visible: true });
