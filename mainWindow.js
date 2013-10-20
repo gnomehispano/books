@@ -130,6 +130,14 @@ const MainWindow = new Lang.Class({
         this._bookWindow.connect("delete-event",
                                  Lang.bind (this._bookWindow,
                                             this._bookWindow.hide_on_delete));
+
+        let updateButtonSensitive = Lang.bind(this, function() {
+            okButton.sensitive = this._newTitleEntry.text.length &&
+                                 this._newAuthorEntry.text.length;
+        });
+        this._newTitleEntry.connect('changed', updateButtonSensitive);
+        this._newAuthorEntry.connect('changed', updateButtonSensitive);
+        updateButtonSensitive();
     },
 
     _book_window_cancel: function (dialog, user_data) {
@@ -142,24 +150,12 @@ const MainWindow = new Lang.Class({
         if (this._bookWindowAction == 'new') {
             let title = this._newTitleEntry.get_text();
             let author = this._newAuthorEntry.get_text();
-            if (title != "" && author != "") {
-                this._bookWindow.hide();
+            this._bookWindow.hide();
 
-                let book = new workModel.workModel(title, author);
-                this._append_book(book);
+            let book = new workModel.workModel(title, author);
+            this._append_book(book);
 
-                this._bookWindowAction = 'none';
-            } else {
-                let dialog = new Gtk.Dialog({ transient_for: this._bookWindow,
-                                              modal: true,
-                                              title: "Missing data" });
-                dialog.add_button('gtk-ok', Gtk.ResponseType.OK);
-                let label = new Gtk.Label({ label: 'Title and author are required.' });
-                dialog.get_content_area().add(label);
-                label.show();
-                dialog.run();
-                dialog.destroy();
-            }
+            this._bookWindowAction = 'none';
         }
     },
 
