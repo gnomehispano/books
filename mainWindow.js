@@ -46,7 +46,7 @@ const MainWindow = new Lang.Class({
                                                     }));
         this.application.add_action(newAction);
 
-        this._newButton = new Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
+        this._newButton =  Gtk.ToolButton.new_from_stock(Gtk.STOCK_NEW);
         this._newButton.is_important = true;
         this._toolbar.add(this._newButton);
         this._newButton.action_name = "app.new";
@@ -103,7 +103,7 @@ const MainWindow = new Lang.Class({
         dialogGrid.attach(this._newAuthorEntry,
                           1, 1, 1, 1);
 
-        let okButton = new Gtk.Button.new_from_stock(Gtk.STOCK_OK);
+        let okButton = Gtk.Button.new_from_stock(Gtk.STOCK_OK);
         okButton.connect("clicked", Lang.bind (this, this._book_window_ok));
         dialogGrid.attach(okButton,
                           0, 2, 2, 1);
