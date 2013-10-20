@@ -106,8 +106,8 @@ const MainWindow = new Lang.Class({
         let dialogGrid = new Gtk.Grid( { row_spacing: 6,
                                          column_spacing: 6 } );
 
-        this._newTitleEntry = new Gtk.Entry();
-        this._newAuthorEntry = new Gtk.Entry();
+        this._newTitleEntry = new Gtk.Entry({ activates_default: true });
+        this._newAuthorEntry = new Gtk.Entry({ activates_default: true });
 
         dialogGrid.attach(new Gtk.Label ({ label: "Title" }),
                           0, 0, 1, 1);
@@ -119,12 +119,13 @@ const MainWindow = new Lang.Class({
                           1, 1, 1, 1);
 
         let okButton = Gtk.Button.new_from_stock(Gtk.STOCK_OK);
+        okButton.can_default = true;
         okButton.connect("clicked", Lang.bind (this, this._book_window_ok));
         dialogGrid.attach(okButton,
                           0, 2, 2, 1);
 
         this._bookWindow.add(dialogGrid);
-        
+        this._bookWindow.set_default(okButton);
 
         this._bookWindow.connect("delete-event",
                                  Lang.bind (this._bookWindow,
@@ -169,6 +170,7 @@ const MainWindow = new Lang.Class({
         this._newTitleEntry.set_text('');
         this._newAuthorEntry.set_text('');
         this._bookWindowAction = 'new';
+        this._newTitleEntry.grab_focus();
         this._bookWindow.show_all();
     },
 
