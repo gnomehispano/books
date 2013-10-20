@@ -5,6 +5,7 @@ const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const workModel = imports.workModel;
+const detailsWindow = imports.detailsWindow;
 
 const MainWindow = new Lang.Class({
     Name: 'MainWindow',
@@ -82,38 +83,8 @@ const MainWindow = new Lang.Class({
     },
 
     _populate_book_window: function() {
-        this._bookWindow = new Gtk.Window({ transient_for: this,
-                                            modal: true,
-                                            title: "Append a new book",
-                                            window_position: Gtk.WindowPosition.CENTER_ON_PARENT,
-                                            border_width: 6 });
-
-        let dialogGrid = new Gtk.Grid( { row_spacing: 6,
-                                         column_spacing: 6 } );
-
-        this._newTitleEntry = new Gtk.Entry();
-        this._newAuthorEntry = new Gtk.Entry();
-
-        dialogGrid.attach(new Gtk.Label ({ label: "Title" }),
-                          0, 0, 1, 1);
-        dialogGrid.attach(this._newTitleEntry,
-                          1, 0, 1, 1);
-        dialogGrid.attach(new Gtk.Label ({ label: "Author" }),
-                          0, 1, 1, 1);
-        dialogGrid.attach(this._newAuthorEntry,
-                          1, 1, 1, 1);
-
-        let okButton = new Gtk.Button.new_from_stock(Gtk.STOCK_OK);
-        okButton.connect("clicked", Lang.bind (this, this._book_window_ok));
-        dialogGrid.attach(okButton,
-                          0, 2, 2, 1);
-
-        this._bookWindow.add(dialogGrid);
-        
-
-        this._bookWindow.connect("delete-event",
-                                 Lang.bind (this._bookWindow,
-                                            this._bookWindow.hide_on_delete));
+        this._bookWindow = new detailsWindow.DetailsWindow(this);
+        this._bookWindow.transient_for = this;
     },
 
     _book_window_cancel: function (dialog, user_data) {
@@ -122,39 +93,11 @@ const MainWindow = new Lang.Class({
         this._bookWindowAction = 'none';
     },
 
-    _book_window_ok: function (dialog, response_id) {
-        if (this._bookWindowAction == 'new') {
-            let title = this._newTitleEntry.get_text();
-            let author = this._newAuthorEntry.get_text();
-            if (title != "" && author != "") {
-                this._bookWindow.hide();
-
-                let book = new workModel.workModel(title, author);
-                this._append_book(book);
-
-                this._bookWindowAction = 'none';
-            } else {
-                let dialog = new Gtk.Dialog({ transient_for: this._bookWindow,
-                                              modal: true,
-                                              title: "Missing data" });
-                dialog.add_button('gtk-ok', Gtk.ResponseType.OK);
-                let label = new Gtk.Label({ label: 'Title and author are required.' });
-                dialog.get_content_area().add(label);
-                label.show();
-                dialog.run();
-                dialog.destroy();
-            }
-        }
-    },
-
     _new_book: function() {
         if (!this._bookWindow) {
             this._populate_book_window();
         }
-        this._newTitleEntry.set_text('');
-        this._newAuthorEntry.set_text('');
-        this._bookWindowAction = 'new';
-        this._bookWindow.show_all();
+	this._bookWindow._clearInfo();
     },
 
     _append_book: function(bookModel) {
