@@ -1,11 +1,13 @@
 const Lang = imports.lang;
 
+const Mainloop = imports.mainloop;
 const Gio = imports.gi.Gio;
 const GObject = imports.gi.GObject;
 const Gtk = imports.gi.Gtk;
 
 const workModel = imports.workModel;
 const detailsWindow = imports.detailsWindow;
+const localProvider = imports.localProvider;
 
 const MainWindow = new Lang.Class({
     Name: 'MainWindow',
@@ -45,6 +47,13 @@ const MainWindow = new Lang.Class({
         this._bookWindowAction = 'none';
 
         this._bookshelf = {};
+
+        // create local provider and let it populate itself
+        this._localProvider = new localProvider.localProvider();
+        this._localProvider.connect('book-found', Lang.bind(this, this._local_book_found));
+        Mainloop.idle_add(Lang.bind(this, function() {
+            this._localProvider.populate();
+        }));
     },
 
     _populate_toolbar: function() {
@@ -123,5 +132,12 @@ const MainWindow = new Lang.Class({
         let iter = this._listStore.append();
         this._listStore.set(iter, [ 0, 1, 2 ], [ bookModel.id, bookModel.title, bookModel.author ]);
         this._bookshelf[bookModel.id] = bookModel;
+    },
+
+    _local_book_found: function(localfiles, title, author) {
+        let book = new workModel.workModel(this._work_counter, title, author);
+
+        this._work_counter++;
+        this._append_book(book);
     },
 });

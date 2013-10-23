@@ -23,7 +23,8 @@ dist_js_DATA = 			\
         detailsWindow.js        \
 	main.js  		\
 	mainWindow.js 		\
-	workModel.js 
+	workModel.js \
+	localProvider.js
 
 CLEANFILES = \
     gnome-books
